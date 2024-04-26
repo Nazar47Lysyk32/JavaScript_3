@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Маркер</title>
+</head>
+<body>
+    <div id="output" style="white-space: pre-wrap;"></div>
+
+    <script>
+        class Marker {
+            constructor(color, inkPercentage) {
+                this.color = color;
+                this.inkPercentage = inkPercentage;
+            }
+
+            print(text) {
+                let output = document.getElementById('output');
+                output.innerHTML += "Текст, виведений маркером кольору " + this.color + ":\n";
+                let displayedText = '';
+                let inkConsumptionPerCharacter = 0.5;
+
+                for (let i = 0; i < text.length; i++) {
+                    if (this.inkPercentage <= 0) {
+                        output.innerHTML += "Чорнила в маркері закінчились.\n";
+                        break;
+                    }
+                    if (text[i] !== ' ') {
+                        this.inkPercentage -= inkConsumptionPerCharacter;
+                        displayedText += text[i];
+                    } else {
+                        displayedText += ' ';
+                    }
+                }
+
+                output.style.color = this.color;
+                output.innerHTML += displayedText + "\n";
+                output.innerHTML += "Залишилось чорнила: " + this.inkPercentage.toFixed(2) + "%\n";
+            }
+        }
+
+        class RefillableMarker extends Marker {
+            refill(inkAmount) {
+                this.inkPercentage += inkAmount;
+                if (this.inkPercentage > 100) {
+                    this.inkPercentage = 100;
+                }
+            }
+        }
+
+        // Використання класів
+        const basicMarker = new Marker('blue', 10);
+        basicMarker.print("Hello, this is a test. We have enough ink?");
+
+        const refillableMarker = new RefillableMarker('green', 5);
+        refillableMarker.print("Trying this again, but do we have enough ink now?");
+        refillableMarker.refill(20); // Заправка маркера
+        refillableMarker.print("After refilling, we should have enough ink.");
+    </script>
+</body>
+</html>
